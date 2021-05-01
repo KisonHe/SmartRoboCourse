@@ -36,6 +36,8 @@ class Crop:
 
 CycCrop = Crop(220, 350, 400, 920)
 RecCrop = Crop(471, 522, 774, 1040)
+# CycCrop = Crop(50, 220, 352, 960)
+# RecCrop = Crop(300, 400, 710, 1100)
 
 
 class CGs:
@@ -66,42 +68,42 @@ class Status_t(Enum):
     Finished = 9
 
 
-Status = Status_t.start
-# Status = Status_t.findCGofCyc
+# Status = Status_t.start
+Status = Status_t.findCGofCyc
 # Status = Status_t.findCGofRec
 # Status = Status_t.Cropping
-MissionType = MissionType_t.Unknown
+# MissionType = MissionType_t.Unknown
+MissionType = MissionType_t.RGB
 
 cap = cv2.VideoCapture("/dev/video2")
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
 
-def getOrder(vR,vG,vB):
-    ret = ''
-    if vR == min(vR, vB, vG):
-        ret += 'R'
-    elif vG == min(vR, vB, vG):
-        ret += 'G'
-    elif vB == min(vR, vB, vG):
-        ret += 'B'
+def getOrder(vr, vg, vb):
+    return_value = ''
+    if vr == min(vr, vb, vg):
+        return_value += 'R'
+    elif vg == min(vr, vb, vg):
+        return_value += 'G'
+    elif vb == min(vr, vb, vg):
+        return_value += 'B'
 
-    if min(vR, vB, vG) < vR < max(vR, vB, vG):
-        ret += 'R'
-    elif min(vR, vB, vG) < vG < max(vR, vB, vG):
-        ret += 'G'
-    elif min(vR, vB, vG) < vB < max(vR, vB, vG):
-        ret += 'B'
+    if min(vr, vb, vg) < vr < max(vr, vb, vg):
+        return_value += 'R'
+    elif min(vr, vb, vg) < vg < max(vr, vb, vg):
+        return_value += 'G'
+    elif min(vr, vb, vg) < vb < max(vr, vb, vg):
+        return_value += 'B'
 
-    if vR == max(vR, vB, vG):
-        ret += 'R'
-    elif vG == max(vR, vB, vG):
-        ret += 'G'
-    elif vB == max(vR, vB, vG):
-        ret += 'B'
-    return ret
-    
-    
+    if vr == max(vr, vb, vg):
+        return_value += 'R'
+    elif vg == max(vr, vb, vg):
+        return_value += 'G'
+    elif vb == max(vr, vb, vg):
+        return_value += 'B'
+    return return_value
+
 
 def extractColor(var_r, var_g, var_b):
     var_b = var_b.astype(np.int16)
@@ -145,8 +147,8 @@ if __name__ == "__main__":
             Status = Status_t.findQRCode
             pass
         elif Status == Status_t.Cropping:
-            img = cv2.imread("a.jpg")
-            # ret, img = cap.read()
+            # img = cv2.imread("a.jpg")
+            ret, img = cap.read()
             # img = img[CycCrop.y:CycCrop.y_h, CycCrop.x:CycCrop.x_w]
             cv2.imshow("image", img)
             key = cv2.waitKey(1)
@@ -187,6 +189,7 @@ if __name__ == "__main__":
                 retVal, thresh = cv2.threshold(new_r, 40, 255, cv2.THRESH_BINARY)
                 thresh = cv2.medianBlur(thresh, 5)
             elif CycCGs.GreenX == 0:
+                # TODO Green & Blue looks bad. Should add some Gamma Trans here
                 # thresh = cv2.adaptiveThreshold(new_r, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 3, 2)
                 retVal, thresh = cv2.threshold(new_g, 20, 255, cv2.THRESH_BINARY)
                 # thresh = cv2.medianBlur(thresh, 5)
@@ -223,14 +226,13 @@ if __name__ == "__main__":
                 # How to calculate CG of contours
                 # https://docs.opencv.org/master/dd/d49/tutorial_py_contour_features.html
 
-            # cv2.imshow("crop", crop)
-            # cv2.imshow("new_b", new_b)
-            # cv2.imshow("new_r", new_r)
-            # cv2.imshow("new_g", new_g)
-            # cv2.imshow("original", image)
-            # cv2.imshow("thresh", thresh)
-            # cv2.waitKey(1)
-
+            cv2.imshow("crop", crop)
+            cv2.imshow("new_b", new_b)
+            cv2.imshow("new_r", new_r)
+            cv2.imshow("new_g", new_g)
+            cv2.imshow("original", image)
+            cv2.imshow("thresh", thresh)
+            cv2.waitKey(1)
 
             # cap.release()
             # cv2.destroyAllWindows()
@@ -293,13 +295,42 @@ if __name__ == "__main__":
 
             pass
         elif Status == Status_t.TCP2DownMachine:
-            print("圆环左到右顺序为{}".format(getOrder(CycCGs.RedX, CycCGs.GreenX, CycCGs.BlueX)))
-            print("物品左到右顺序为{}".format(getOrder(RecCGs.RedX, RecCGs.GreenX, RecCGs.BlueX)))
+            # 0 1 2
+            # 3 4 5
+            ringStr = getOrder(CycCGs.RedX, CycCGs.GreenX, CycCGs.BlueX)
+            objStr = getOrder(RecCGs.RedX, RecCGs.GreenX, RecCGs.BlueX)
+
+            print("圆环左到右顺序为{}".format(ringStr))
+            print("物品左到右顺序为{}".format(objStr))
+            Message = 'O'   # O not 0
+
+            if MissionType == MissionType_t.GBR:
+                Message += str(ringStr.find('G'))
+                Message += str(objStr.find('G') + 3)
+                Message += str(ringStr.find('B'))
+                Message += str(objStr.find('B') + 3)
+                Message += str(ringStr.find('R'))
+                Message += str(objStr.find('R') + 3)
+            elif MissionType == MissionType_t.BRG:
+                Message += str(ringStr.find('B'))
+                Message += str(objStr.find('B') + 3)
+                Message += str(ringStr.find('R'))
+                Message += str(objStr.find('R') + 3)
+                Message += str(ringStr.find('G'))
+                Message += str(objStr.find('G') + 3)
+            elif MissionType == MissionType_t.RGB:
+                Message += str(ringStr.find('R'))
+                Message += str(objStr.find('R') + 3)
+                Message += str(ringStr.find('G'))
+                Message += str(objStr.find('G') + 3)
+                Message += str(ringStr.find('B'))
+                Message += str(objStr.find('B') + 3)
+            Message += 'E'
+            print(Message)
+            # cv2.waitKey(0)
+
+
             Status = Status_t.Finished
-
-
-
-
 
 # 霍夫变换
 # https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
