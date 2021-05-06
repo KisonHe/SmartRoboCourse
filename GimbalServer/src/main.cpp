@@ -22,6 +22,9 @@ TFT_eSPI tft = TFT_eSPI();         // Invoke custom library
 #include <lvgl.h>
 #include <TFT_eSPI.h>
 
+
+#include "servo_warpper.h"
+
 #include "lvgl_calib_tab.h"
 #include "lvgl_info_tab.h"
 SemaphoreHandle_t LVGL_Semaphore;
@@ -47,7 +50,8 @@ lv_obj_t *mainTabView = nullptr;
 void lv_ex_btnmatrix_1(lv_obj_t * parent);
 
 void updateServo(){
-
+  Servo_X.write(servo_x);
+  Servo_Y.write(servo_y);
 }
 
 

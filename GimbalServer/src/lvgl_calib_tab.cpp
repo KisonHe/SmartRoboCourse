@@ -84,6 +84,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event)
           vTaskDelay(500);
           lv_save_nvs_msgbox_init(calibTabMainCont);
           calib_status = calibFinish;
+          lv_label_set_text(calib_hint_label, "#00ffe5 Calibration Finished Press Restart to Restart#");
           break;
         }
         calib_status = (calib_status_e)(calib_status + 1);
