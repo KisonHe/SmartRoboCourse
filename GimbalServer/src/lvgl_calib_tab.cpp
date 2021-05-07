@@ -23,16 +23,17 @@ extern int servo_x;
 extern int servo_y;
 calib_status_e calib_status = notStarted;
 
-void lv_calib_tab_init(lv_obj_t *view) {
-    calibTabMainCont = lv_cont_create(view, NULL);
-    lv_obj_set_auto_realign(calibTabMainCont, true);                    /*Auto realign when the size changes*/
-    lv_obj_align_origo(calibTabMainCont, NULL, LV_ALIGN_CENTER, 0, 0);  /*This parametrs will be sued when realigned*/
-    lv_cont_set_fit(calibTabMainCont, LV_FIT_PARENT);
-    lv_cont_set_layout(calibTabMainCont, LV_LAYOUT_OFF);
+void lv_calib_tab_init(lv_obj_t *view)
+{
+  calibTabMainCont = lv_cont_create(view, NULL);
+  lv_obj_set_auto_realign(calibTabMainCont, true);                   /*Auto realign when the size changes*/
+  lv_obj_align_origo(calibTabMainCont, NULL, LV_ALIGN_CENTER, 0, 0); /*This parametrs will be sued when realigned*/
+  lv_cont_set_fit(calibTabMainCont, LV_FIT_PARENT);
+  lv_cont_set_layout(calibTabMainCont, LV_LAYOUT_OFF);
 
-    lv_calibCtrl_btnmatrix_init(calibTabMainCont);
-    lv_calib_leds_init(calibTabMainCont,CalibLEDs);
-    lv_calib_label_init(calibTabMainCont, calib_hint_label, calib_xValue_label, calib_yValue_label);
+  lv_calibCtrl_btnmatrix_init(calibTabMainCont);
+  lv_calib_leds_init(calibTabMainCont, CalibLEDs);
+  lv_calib_label_init(calibTabMainCont, calib_hint_label, calib_xValue_label, calib_yValue_label);
 }
 static void lv_clear_nvs_msgbox_init(lv_obj_t *parent);
 static void lv_save_nvs_msgbox_init(lv_obj_t *parent);
@@ -57,11 +58,14 @@ static void event_handler(lv_obj_t *obj, lv_event_t event)
 
       break;
     case 1:
-      calib_y += 1;break;
+      calib_y += 1;
+      break;
     case 2:
-      lv_clear_nvs_msgbox_init(calibTabMainCont);break;
+      lv_clear_nvs_msgbox_init(calibTabMainCont);
+      break;
     case 3:
-      calib_x -= 1;break;
+      calib_x -= 1;
+      break;
     case 4:
       // calib_x -= 1;
       if (calib_status == notStarted)
@@ -91,17 +95,19 @@ static void event_handler(lv_obj_t *obj, lv_event_t event)
       }
       break;
     case 5:
-      calib_x += 1;break;
+      calib_x += 1;
+      break;
     case 6:
-      if (calib_status != notStarted && calib_status != P1 && calib_status != calibFinish){
+      if (calib_status != notStarted && calib_status != P1 && calib_status != calibFinish)
+      {
         lv_led_off(CalibLEDs[(int)(calib_status - 1)]);
         lv_led_on(CalibLEDs[(int)(calib_status - 2)]);
         calib_status = calib_status_e(calib_status - 1);
-
       }
       break;
     case 7:
-      calib_y -= 1;break;
+      calib_y -= 1;
+      break;
 
     default:
       break;
@@ -118,21 +124,28 @@ static void event_handler(lv_obj_t *obj, lv_event_t event)
     switch (id)
     {
     case 1:
-      calib_y += 3;break;
+      calib_y += 3;
+      break;
     case 3:
-      calib_x -= 3;break;
+      calib_x -= 3;
+      break;
     case 5:
-      calib_x += 3;break;
+      calib_x += 3;
+      break;
     case 7:
-      calib_y -= 3;break;
+      calib_y -= 3;
+      break;
 
-    default:break;
+    default:
+      break;
     }
     lv_label_set_text_fmt(calib_xValue_label, "X: %d", calib_x);
     lv_label_set_text_fmt(calib_yValue_label, "Y: %d", calib_y);
   }
-  if (calib_status != notStarted && calib_status != calibFinish){
-    servo_x = calib_x;servo_y = calib_y;
+  if (calib_status != notStarted && calib_status != calibFinish)
+  {
+    servo_x = calib_x;
+    servo_y = calib_y;
   }
 }
 
