@@ -132,7 +132,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event)
     lv_label_set_text_fmt(calib_yValue_label, "Y: %d", calib_y);
   }
   if (calib_status != notStarted && calib_status != calibFinish){
-    servo_x = calib_x;servo_x = calib_y;
+    servo_x = calib_x;servo_y = calib_y;
   }
 }
 

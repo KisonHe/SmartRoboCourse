@@ -50,8 +50,8 @@ lv_obj_t *mainTabView = nullptr;
 void lv_ex_btnmatrix_1(lv_obj_t * parent);
 
 void updateServo(){
-  Servo_X.write(servo_x);
-  Servo_Y.write(servo_y);
+  hardware::Servo_X.write(servo_x);
+  hardware::Servo_Y.write(servo_y);
 }
 
 
@@ -59,6 +59,7 @@ void setup()
 {
     Serial.begin(115200);
     memset(Positions,0,sizeof(Positions));
+
     esp_err_t err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         // NVS partition was truncated and needs to be erased
@@ -78,7 +79,8 @@ void setup()
       key[2] = 0;
       err = nvs_get_i16(my_handle, key, &Positions[i/2][i%2]);
       if (err != ESP_OK){
-          Serial.println("Something is **** in NVS");
+          Serial.print("Something is **** in NVS at i=");
+          Serial.println(i);
           Serial.print(esp_err_to_name(err));
           NVSHasData = 250;
           break;
