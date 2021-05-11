@@ -15,10 +15,13 @@
 # As for the lower part, background isn't white. try it at the field
 
 # import packages
+import serial
 import cv2
 import numpy as np
 from pyzbar.pyzbar import decode
 from enum import Enum
+
+uart_port = '/dev/ttyUSB0'
 
 
 class Crop:
@@ -34,10 +37,10 @@ class Crop:
     x_w = 0
 
 
-CycCrop = Crop(220, 350, 400, 920)
-RecCrop = Crop(471, 522, 774, 1040)
-# CycCrop = Crop(50, 220, 352, 960)
-# RecCrop = Crop(300, 400, 710, 1100)
+# CycCrop = Crop(220, 350, 400, 920)
+# RecCrop = Crop(471, 522, 774, 1040)
+CycCrop = Crop(50, 220, 352, 960)
+RecCrop = Crop(300, 400, 710, 1100)
 
 
 class CGs:
@@ -68,12 +71,12 @@ class Status_t(Enum):
     Finished = 9
 
 
-# Status = Status_t.start
-Status = Status_t.findCGofCyc
+Status = Status_t.start
+# Status = Status_t.findCGofCyc
 # Status = Status_t.findCGofRec
 # Status = Status_t.Cropping
-# MissionType = MissionType_t.Unknown
-MissionType = MissionType_t.RGB
+MissionType = MissionType_t.Unknown
+# MissionType = MissionType_t.GBR
 
 cap = cv2.VideoCapture("/dev/video2")
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
@@ -136,6 +139,7 @@ def extractColor(var_r, var_g, var_b):
 
 
 if __name__ == "__main__":
+    ser = serial.Serial(uart_port, 115200)
     while Status != Status_t.Finished:
         if Status == Status_t.start:
             # FIXME Init all stuff
@@ -169,7 +173,7 @@ if __name__ == "__main__":
                     MissionType = MissionType_t.GBR
                     Status = Status_t.findCGofCyc
                 elif barcode.data.decode('utf-8') == "红-绿-蓝":
-                    MissionType = MissionType_t.GBR
+                    MissionType = MissionType_t.RGB
                     Status = Status_t.findCGofCyc
                     pass
                 else:
@@ -178,8 +182,8 @@ if __name__ == "__main__":
                 pass
             pass
         elif Status == Status_t.findCGofCyc:
-            # ret, image = cap.read()
-            image = cv2.imread("a.jpg")
+            ret, image = cap.read()
+            # image = cv2.imread("a.jpg")
             crop = image[CycCrop.y:CycCrop.y_h, CycCrop.x:CycCrop.x_w].copy()
             b, g, r = crop[:, :, 0], crop[:, :, 1], crop[:, :, 2]
             new_r, new_g, new_b = extractColor(r, g, b)
@@ -238,8 +242,8 @@ if __name__ == "__main__":
             # cv2.destroyAllWindows()
             pass
         elif Status == Status_t.findCGofRec:
-            # ret, image = cap.read()
-            image = cv2.imread("a.jpg")
+            ret, image = cap.read()
+            # image = cv2.imread("a.jpg")
             crop = image[RecCrop.y:RecCrop.y_h, RecCrop.x:RecCrop.x_w].copy()
             b, g, r = crop[:, :, 0], crop[:, :, 1], crop[:, :, 2]
             new_r, new_g, new_b = extractColor(r, g, b)
@@ -327,6 +331,7 @@ if __name__ == "__main__":
                 Message += str(objStr.find('B') + 3)
             Message += 'E'
             print(Message)
+            ser.write(Message.encode())
             # cv2.waitKey(0)
 
 
