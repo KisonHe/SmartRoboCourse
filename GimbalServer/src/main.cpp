@@ -63,6 +63,11 @@ void setup()
   ESP_ERROR_CHECK(err);
 
   err = nvs_open("storage", NVS_READWRITE, &my_handle);
+  if (err != ESP_OK)
+  {
+      Serial.print("Unexpected Error at nvs_open:");
+      Serial.println(esp_err_to_name(err));
+  }
 
   int i = 0;
   for (i = 0; i < 6 * 2; i++)
@@ -74,8 +79,13 @@ void setup()
     err = nvs_get_i16(my_handle, key, &Positions[i / 2][i % 2]);
     if (err != ESP_OK)
     {
-      Serial.println("Something is **** in NVS");
-      Serial.print(esp_err_to_name(err));
+      if (err == ESP_ERR_NVS_NOT_FOUND)
+        Serial.println("Some Values is not initialized yet");
+      else{
+        Serial.print("Unexpected Error:");
+        Serial.println(esp_err_to_name(err));
+      }
+      
       NVSHasData = 250;
       break;
     }
