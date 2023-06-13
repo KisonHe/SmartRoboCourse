@@ -152,7 +152,7 @@ void loop()
 
 void lv_main_tabview_init()
 {
-  lv_obj_t *mainTabView = lv_tabview_create(lv_scr_act(), NULL);
+  lv_obj_t *mainTabView = lv_tabview_create(lv_scr_act(), nullptr);
 
   lv_obj_t *infoTab = lv_tabview_add_tab(mainTabView, "Info");
   lv_obj_t *calibTab = lv_tabview_add_tab(mainTabView, "Calibration");

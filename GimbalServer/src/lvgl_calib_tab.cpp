@@ -25,9 +25,9 @@ calib_status_e calib_status = notStarted;
 
 void lv_calib_tab_init(lv_obj_t *view)
 {
-  calibTabMainCont = lv_cont_create(view, NULL);
+  calibTabMainCont = lv_cont_create(view, nullptr);
   lv_obj_set_auto_realign(calibTabMainCont, true);                   /*Auto realign when the size changes*/
-  lv_obj_align_origo(calibTabMainCont, NULL, LV_ALIGN_CENTER, 0, 0); /*This parametrs will be sued when realigned*/
+  lv_obj_align_origo(calibTabMainCont, nullptr, LV_ALIGN_CENTER, 0, 0); /*This parametrs will be sued when realigned*/
   lv_cont_set_fit(calibTabMainCont, LV_FIT_PARENT);
   lv_cont_set_layout(calibTabMainCont, LV_LAYOUT_OFF);
 
@@ -155,20 +155,20 @@ static const char *btnm_map[] = {LV_SYMBOL_REFRESH, LV_SYMBOL_UP, LV_SYMBOL_TRAS
 
 void lv_calibCtrl_btnmatrix_init(lv_obj_t *parent)
 {
-  lv_obj_t *btnm1 = lv_btnmatrix_create(parent, NULL);
+  lv_obj_t *btnm1 = lv_btnmatrix_create(parent, nullptr);
   lv_btnmatrix_set_map(btnm1, btnm_map);
 
   // lv_btnmatrix_set_btn_ctrl(btnm1,2,LV_BTNMATRIX_CTRL_HIDDEN);
-  lv_obj_align(btnm1, NULL, LV_ALIGN_IN_LEFT_MID, 5, 0);
+  lv_obj_align(btnm1, nullptr, LV_ALIGN_IN_LEFT_MID, 5, 0);
   lv_obj_set_event_cb(btnm1, event_handler);
   lv_obj_set_size(btnm1, 160, 130);
 }
 
 void lv_calib_label_init(lv_obj_t *parent, lv_obj_t *&label, lv_obj_t *&vxlabel, lv_obj_t *&vylabel)
 {
-  label = lv_label_create(parent, NULL);
-  vxlabel = lv_label_create(parent, NULL);
-  vylabel = lv_label_create(parent, NULL);
+  label = lv_label_create(parent, nullptr);
+  vxlabel = lv_label_create(parent, nullptr);
+  vylabel = lv_label_create(parent, nullptr);
   // lv_label_set_long_mode(label, LV_LABEL_LONG_BREAK);     /*Break the long lines*/
   lv_label_set_long_mode(label, LV_LABEL_LONG_SROLL_CIRC);
   lv_label_set_recolor(label, true);                /*Enable re-coloring by commands in the text*/
@@ -179,9 +179,9 @@ void lv_calib_label_init(lv_obj_t *parent, lv_obj_t *&label, lv_obj_t *&vxlabel,
   lv_label_set_text_fmt(vxlabel, "X: %d", calib_x);
   lv_label_set_text_fmt(vylabel, "Y: %d", calib_x);
   // lv_obj_set_width(label, 150);
-  lv_obj_align(label, NULL, LV_ALIGN_CENTER, 80, 20);
-  lv_obj_align(vxlabel, NULL, LV_ALIGN_CENTER, 40, 50);
-  lv_obj_align(vylabel, NULL, LV_ALIGN_CENTER, 100, 50);
+  lv_obj_align(label, nullptr, LV_ALIGN_CENTER, 80, 20);
+  lv_obj_align(vxlabel, nullptr, LV_ALIGN_CENTER, 40, 50);
+  lv_obj_align(vylabel, nullptr, LV_ALIGN_CENTER, 100, 50);
 }
 
 void lv_calib_leds_init(lv_obj_t *parent, lv_obj_t **leds)
@@ -196,24 +196,24 @@ void lv_calib_leds_init(lv_obj_t *parent, lv_obj_t **leds)
   // lv_style_set_bg_grad_dir(&style_led, LV_STATE_DEFAULT, LV_GRAD_DIR_VER);
   for (int i = 0; i < 6; i++)
   {
-    leds[i] = lv_led_create(parent, NULL);
+    leds[i] = lv_led_create(parent, nullptr);
     lv_obj_set_size(leds[i], 20, 20);
     lv_obj_add_style(leds[i], LV_LED_PART_MAIN, &style_led);
     lv_led_off(leds[i]);
   }
-  lv_obj_align(leds[0], NULL, LV_ALIGN_CENTER, 40, -60);
-  lv_obj_align(leds[1], NULL, LV_ALIGN_CENTER, 80, -60);
-  lv_obj_align(leds[2], NULL, LV_ALIGN_CENTER, 120, -60);
-  lv_obj_align(leds[3], NULL, LV_ALIGN_CENTER, 40, -30);
-  lv_obj_align(leds[4], NULL, LV_ALIGN_CENTER, 80, -30);
-  lv_obj_align(leds[5], NULL, LV_ALIGN_CENTER, 120, -30);
+  lv_obj_align(leds[0], nullptr, LV_ALIGN_CENTER, 40, -60);
+  lv_obj_align(leds[1], nullptr, LV_ALIGN_CENTER, 80, -60);
+  lv_obj_align(leds[2], nullptr, LV_ALIGN_CENTER, 120, -60);
+  lv_obj_align(leds[3], nullptr, LV_ALIGN_CENTER, 40, -30);
+  lv_obj_align(leds[4], nullptr, LV_ALIGN_CENTER, 80, -30);
+  lv_obj_align(leds[5], nullptr, LV_ALIGN_CENTER, 120, -30);
 }
 
 static void lv_clear_nvs_msgbox_init(lv_obj_t *parent)
 {
   static const char *btns[] = {"Yes", "No", ""};
 
-  lv_obj_t *mbox1 = lv_msgbox_create(parent, NULL);
+  lv_obj_t *mbox1 = lv_msgbox_create(parent, nullptr);
   lv_msgbox_set_text(mbox1, "Confirm to Clear Data in NVS?");
   lv_msgbox_add_btns(mbox1, btns);
   lv_obj_set_width(mbox1, 200);
@@ -240,14 +240,14 @@ static void lv_clear_nvs_msgbox_init(lv_obj_t *parent)
       }
     }
   });
-  lv_obj_align(mbox1, NULL, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
+  lv_obj_align(mbox1, nullptr, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
 }
 
 static void lv_save_nvs_msgbox_init(lv_obj_t *parent)
 {
   static const char *btns[] = {"Yes", "No", ""};
 
-  lv_obj_t *mbox1 = lv_msgbox_create(parent, NULL);
+  lv_obj_t *mbox1 = lv_msgbox_create(parent, nullptr);
   lv_msgbox_set_text(mbox1, "Confirm to Save Data to NVS?");
   lv_msgbox_add_btns(mbox1, btns);
   lv_obj_set_width(mbox1, 200);
@@ -281,5 +281,5 @@ static void lv_save_nvs_msgbox_init(lv_obj_t *parent)
       }
     }
   });
-  lv_obj_align(mbox1, NULL, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
+  lv_obj_align(mbox1, nullptr, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
 }
